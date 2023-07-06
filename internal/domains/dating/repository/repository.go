@@ -18,6 +18,7 @@ type DatingRepository interface {
 	SwipeIncr(userID uuid.UUID) (amount int64, err error)
 	SwipeCacheListID(userID uuid.UUID, profileID uuid.UUID) (err error)
 	SwipeCacheExpiry(userID uuid.UUID) (err error)
+	GetSwipeCacheListID(userID uuid.UUID) (data []string, err error)
 
 	// BeginTx RollbackTx CommitTx will be used in service layer
 	BeginTx() (*sqlx.Tx, error)
