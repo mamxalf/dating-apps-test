@@ -14,10 +14,15 @@ import (
 type DatingRepository interface {
 	SwipeProfile(ctx context.Context, swipe *model.NewSwipe) (err error)
 
-	// Cache
+	// SwipeIncr SwipeCacheListID SwipeCacheExpiry for cache data
 	SwipeIncr(userID uuid.UUID) (amount int64, err error)
 	SwipeCacheListID(userID uuid.UUID, profileID uuid.UUID) (err error)
 	SwipeCacheExpiry(userID uuid.UUID) (err error)
+
+	// BeginTx RollbackTx CommitTx will be used in service layer
+	BeginTx() (*sqlx.Tx, error)
+	RollbackTx(tx *sqlx.Tx) error
+	CommitTx(tx *sqlx.Tx) error
 }
 
 type DatingRepositoryPostgres struct {
@@ -51,4 +56,37 @@ func (repo *DatingRepositoryPostgres) exec(ctx context.Context, command string, 
 	}
 
 	return result, nil
+}
+
+// BeginTx will initiate the database transaction and will be used in use case layer later
+func (repo *DatingRepositoryPostgres) BeginTx() (tx *sqlx.Tx, err error) {
+	tx, err = repo.DB.Write.Beginx()
+	if err != nil {
+		log.Error().Err(err)
+		err = failure.InternalError(err)
+	}
+
+	return
+}
+
+// RollbackTx will rollback the database transaction
+func (repo *DatingRepositoryPostgres) RollbackTx(tx *sqlx.Tx) (err error) {
+	err = tx.Rollback()
+	if err != nil {
+		log.Error().Err(err)
+		err = failure.InternalError(err)
+	}
+
+	return
+}
+
+// CommitTx will commit the database transaction
+func (repo *DatingRepositoryPostgres) CommitTx(tx *sqlx.Tx) (err error) {
+	err = tx.Commit()
+	if err != nil {
+		log.Error().Err(err)
+		err = failure.InternalError(err)
+	}
+
+	return
 }
