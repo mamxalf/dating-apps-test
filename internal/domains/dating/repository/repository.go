@@ -6,12 +6,18 @@ import (
 	"dating-apps/infras"
 	"dating-apps/internal/domains/dating/model"
 	"dating-apps/shared/failure"
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/rs/zerolog/log"
 )
 
 type DatingRepository interface {
 	SwipeProfile(ctx context.Context, swipe *model.NewSwipe) (err error)
+
+	// Cache
+	SwipeIncr(userID uuid.UUID) (amount int64, err error)
+	SwipeCacheListID(userID uuid.UUID, profileID uuid.UUID) (err error)
+	SwipeCacheExpiry(userID uuid.UUID) (err error)
 }
 
 type DatingRepositoryPostgres struct {
