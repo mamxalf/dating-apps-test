@@ -25,6 +25,7 @@ func (h *UserHandler) Router(r chi.Router) {
 		r.Group(func(r chi.Router) {
 			//r.Use(h.AuthMiddleware.ClientCredential)
 			r.Post("/register", h.Register)
+			r.Post("/login", h.Login)
 		})
 
 	})
@@ -62,4 +63,38 @@ func (h *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.WithMessage(w, http.StatusOK, "User successfully register!")
+}
+
+// Login sign in user.
+// @Summary Login User
+// @Description This endpoint for Login User.
+// @Tags Users
+// @Accept  json
+// @Produce json
+// @Param request body user.LoginRequest true "Request Body"
+// @Success 200 {object} response.Base
+// @Failure 400 {object} response.Base
+// @Failure 404 {object} response.Base
+// @Failure 500 {object} response.Base
+// @Router /v1/users/login [post]
+func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var userLoginRequest user.LoginRequest
+	if err := decoder.Decode(&userLoginRequest); err != nil {
+		response.WithError(w, failure.BadRequest(err))
+		return
+	}
+
+	if err := userLoginRequest.Validate(); err != nil {
+		response.WithError(w, failure.BadRequest(err))
+		return
+	}
+	res, err := h.UserService.Login(r.Context(), userLoginRequest)
+	if err != nil {
+		log.Warn().Err(err).Msg("[Register Handler]")
+		response.WithError(w, err)
+		return
+	}
+
+	response.WithJSON(w, http.StatusOK, res)
 }

@@ -7,6 +7,8 @@ require (
 	github.com/go-chi/cors v1.2.1
 	github.com/go-playground/validator/v10 v10.14.1
 	github.com/go-redis/redis v6.15.9+incompatible
+	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/google/uuid v1.3.0
 	github.com/google/wire v0.5.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lib/pq v1.10.9
@@ -15,6 +17,7 @@ require (
 	github.com/spf13/viper v1.16.0
 	github.com/swaggo/http-swagger v1.3.4
 	github.com/swaggo/swag v1.16.1
+	golang.org/x/crypto v0.11.0
 )
 
 require (
@@ -207,7 +210,6 @@ require (
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
-	golang.org/x/crypto v0.11.0 // indirect
 	golang.org/x/exp v0.0.0-20230510235704-dd950f8aeaea // indirect
 	golang.org/x/exp/typeparams v0.0.0-20230224173230-c95f2b4c22f2 // indirect
 	golang.org/x/mod v0.12.0 // indirect

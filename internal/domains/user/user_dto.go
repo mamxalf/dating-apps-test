@@ -31,3 +31,18 @@ func (r *RegisterRequest) ToModel() (register Register, err error) {
 	}
 	return
 }
+
+type LoginRequest struct {
+	Email    string `validate:"required,email" json:"email" example:"test@example.com"`
+	Password string `validate:"required,alphanum,min=8,max=30" json:"password,omitempty" example:"s3Cr3Tk3y"`
+}
+
+func (r *LoginRequest) Validate() (err error) {
+	validator := shared.GetValidator()
+	return validator.Struct(r)
+}
+
+type LoginResponse struct {
+	Token        string `json:"token,omitempty"`
+	RefreshToken string `json:"refresh_token,omitempty"`
+}
