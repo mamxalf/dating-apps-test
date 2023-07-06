@@ -1,24 +1,42 @@
 package user
 
-import "dating-apps/configs"
+import (
+	"context"
+	"dating-apps/configs"
+	"dating-apps/shared/failure"
+	"github.com/rs/zerolog/log"
+	"net/http"
+)
 
 type UserService interface {
-	ResolvePing() (ping Ping, err error)
+	Register(ctx context.Context, req RegisterRequest) (err error)
 }
 
 type UserServiceImpl struct {
-	Config *configs.Config
+	UserRepository UserRepository
+	Config         *configs.Config
 }
 
 // ProvideUserServiceImpl is the provider for this service.
-func ProvideUserServiceImpl(config *configs.Config) *UserServiceImpl {
+func ProvideUserServiceImpl(userRepository UserRepository, config *configs.Config) *UserServiceImpl {
 	s := new(UserServiceImpl)
+	s.UserRepository = userRepository
 	s.Config = config
 
 	return s
 }
 
-func (u *UserServiceImpl) ResolvePing() (ping Ping, err error) {
-	ping = Ping{Message: "test"}
+func (u *UserServiceImpl) Register(ctx context.Context, req RegisterRequest) (err error) {
+	registerModel, err := req.ToModel()
+	if err != nil {
+		log.Error().Interface("params", req).Err(err).Msg("[Register - Service]")
+		return
+	}
+
+	if err = u.UserRepository.RegisterNewUser(ctx, &registerModel); err != nil {
+		if failure.GetCode(err) != http.StatusNotFound {
+			log.Error().Interface("params", req).Err(err).Msg("[Register - Service]")
+		}
+	}
 	return
 }

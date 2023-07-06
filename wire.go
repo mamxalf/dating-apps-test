@@ -22,12 +22,10 @@ var persistences = wire.NewSet(
 )
 
 var domainUser = wire.NewSet(
-	// FooService interface and implementation
 	user.ProvideUserServiceImpl,
 	wire.Bind(new(user.UserService), new(*user.UserServiceImpl)),
-	// FooRepository interface and implementation
-	//foobarbaz.ProvideFooRepositoryMySQL,
-	//wire.Bind(new(foobarbaz.FooRepository), new(*foobarbaz.FooRepositoryMySQL)),
+	user.ProvideUserRepositoryPostgres,
+	wire.Bind(new(user.UserRepository), new(*user.UserRepositoryPostgres)),
 )
 
 // Wiring for all domains.

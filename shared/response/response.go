@@ -1,6 +1,7 @@
 package response
 
 import (
+	"dating-apps/shared/failure"
 	"encoding/json"
 	"fmt"
 	"github.com/rs/zerolog/log"
@@ -35,7 +36,7 @@ func WithJSON(w http.ResponseWriter, code int, jsonPayload interface{}) {
 
 // WithError sends a response with an error message
 func WithError(w http.ResponseWriter, err error) {
-	code := GetCode(err)
+	code := failure.GetCode(err)
 	errMsg := err.Error()
 	respond(w, code, Base{Error: &errMsg})
 }
@@ -52,13 +53,6 @@ func WithUnhealthy(w http.ResponseWriter) {
 
 func (e *Failure) Error() string {
 	return fmt.Sprintf("%s: %s", http.StatusText(e.Code), e.Message)
-}
-
-func GetCode(err error) int {
-	if f, ok := err.(*Failure); ok {
-		return f.Code
-	}
-	return http.StatusInternalServerError
 }
 
 func respond(w http.ResponseWriter, code int, payload interface{}) {

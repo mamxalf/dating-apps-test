@@ -3,7 +3,7 @@ BEGIN;
 CREATE TABLE IF NOT EXISTS users (
         id UUID NOT NULL PRIMARY KEY DEFAULT uuid_generate_v4(), -- uuid v4
         username varchar NOT NULL,
-        email varchar NOT NULL,
+        email varchar NOT NULL UNIQUE,
         password varchar NOT NULL,
         is_verified bool NOT NULL DEFAULT false,
 

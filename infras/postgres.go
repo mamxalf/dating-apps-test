@@ -23,15 +23,15 @@ type PostgresConn struct {
 func ProvidePostgresConn(config *configs.Config) *PostgresConn {
 	// actually you can split between read and write depends your requirements :ok:
 	return &PostgresConn{
-		Read:  CreatePostgresConn(*config),
-		Write: CreatePostgresConn(*config),
+		Read:  CreatePostgresConn("read", *config),
+		Write: CreatePostgresConn("write", *config),
 	}
 }
 
 // CreatePostgresConn creates a database connection for read access.
-func CreatePostgresConn(config configs.Config) *sqlx.DB {
+func CreatePostgresConn(connType string, config configs.Config) *sqlx.DB {
 	return CreatePostgresDBConnection(
-		"read",
+		connType,
 		config.DB.PG.User,
 		config.DB.PG.Password,
 		config.DB.PG.Host,
