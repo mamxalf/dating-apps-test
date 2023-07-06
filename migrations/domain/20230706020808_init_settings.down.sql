@@ -1,0 +1,6 @@
+BEGIN;
+
+DROP EXTENSION IF EXISTS "uuid-ossp";
+DROP FUNCTION IF EXISTS set_updated_at();
+
+COMMIT;
