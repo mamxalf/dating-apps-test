@@ -24,6 +24,7 @@ var configurations = wire.NewSet(
 
 var persistences = wire.NewSet(
 	infras.ProvidePostgresConn,
+	infras.RedisNewClient,
 )
 
 var domainUser = wire.NewSet(

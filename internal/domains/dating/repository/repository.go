@@ -15,12 +15,14 @@ type DatingRepository interface {
 }
 
 type DatingRepositoryPostgres struct {
-	DB *infras.PostgresConn
+	DB    *infras.PostgresConn
+	Cache *infras.RedisConn
 }
 
-func ProvideDatingRepositoryPostgres(db *infras.PostgresConn) *DatingRepositoryPostgres {
+func ProvideDatingRepositoryPostgres(db *infras.PostgresConn, cache *infras.RedisConn) *DatingRepositoryPostgres {
 	s := new(DatingRepositoryPostgres)
 	s.DB = db
+	s.Cache = cache
 	return s
 }
 
