@@ -9,8 +9,11 @@ import (
 	"dating-apps/http/middleware"
 	router "dating-apps/http/routers"
 	"dating-apps/infras"
+	datingRepository "dating-apps/internal/domains/dating/repository"
+	datingService "dating-apps/internal/domains/dating/service"
 	"dating-apps/internal/domains/user/repository"
 	"dating-apps/internal/domains/user/service"
+	"dating-apps/internal/handlers/dating"
 	"dating-apps/internal/handlers/user"
 	"github.com/google/wire"
 )
@@ -30,14 +33,23 @@ var domainUser = wire.NewSet(
 	wire.Bind(new(repository.UserRepository), new(*repository.UserRepositoryPostgres)),
 )
 
+var domainDating = wire.NewSet(
+	datingService.ProvideDatingServiceImpl,
+	wire.Bind(new(datingService.DatingService), new(*datingService.DatingServiceImpl)),
+	datingRepository.ProvideDatingRepositoryPostgres,
+	wire.Bind(new(datingRepository.DatingRepository), new(*datingRepository.DatingRepositoryPostgres)),
+)
+
 // Wiring for all domains.
 var domains = wire.NewSet(
 	domainUser,
+	domainDating,
 )
 
 var routing = wire.NewSet(
 	wire.Struct(new(router.DomainHandlers), "*"),
 	user.ProvideUserHandler,
+	dating.ProvideDatingHandler,
 	router.ProvideRouter,
 )
 
