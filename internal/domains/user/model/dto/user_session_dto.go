@@ -1,6 +1,7 @@
-package user
+package dto
 
 import (
+	"dating-apps/internal/domains/user/model"
 	"dating-apps/shared"
 	"dating-apps/shared/util"
 	"github.com/rs/zerolog/log"
@@ -18,13 +19,13 @@ func (r *RegisterRequest) Validate() (err error) {
 	return validator.Struct(r)
 }
 
-func (r *RegisterRequest) ToModel() (register Register, err error) {
+func (r *RegisterRequest) ToModel() (register model.UserRegister, err error) {
 	hashPassword, err := util.HashPassword(r.Password)
 	if err != nil {
 		log.Err(err).Msg("[Hash Password]")
 		return
 	}
-	register = Register{
+	register = model.UserRegister{
 		Username: r.Username,
 		Email:    r.Email,
 		Password: hashPassword,

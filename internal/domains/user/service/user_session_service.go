@@ -1,8 +1,9 @@
-package user
+package service
 
 import (
 	"context"
-	"dating-apps/configs"
+	"dating-apps/internal/domains/user/model"
+	"dating-apps/internal/domains/user/model/dto"
 	"dating-apps/shared/failure"
 	"dating-apps/shared/token"
 	"dating-apps/shared/util"
@@ -11,26 +12,7 @@ import (
 	"net/http"
 )
 
-type UserService interface {
-	Register(ctx context.Context, req RegisterRequest) (err error)
-	Login(ctx context.Context, req LoginRequest) (res LoginResponse, err error)
-}
-
-type UserServiceImpl struct {
-	UserRepository UserRepository
-	Config         *configs.Config
-}
-
-// ProvideUserServiceImpl is the provider for this service.
-func ProvideUserServiceImpl(userRepository UserRepository, config *configs.Config) *UserServiceImpl {
-	s := new(UserServiceImpl)
-	s.UserRepository = userRepository
-	s.Config = config
-
-	return s
-}
-
-func (u *UserServiceImpl) Register(ctx context.Context, req RegisterRequest) (err error) {
+func (u *UserServiceImpl) Register(ctx context.Context, req dto.RegisterRequest) (err error) {
 	registerModel, err := req.ToModel()
 	if err != nil {
 		log.Error().Interface("params", req).Err(err).Msg("[Register - Service]")
@@ -45,7 +27,7 @@ func (u *UserServiceImpl) Register(ctx context.Context, req RegisterRequest) (er
 	return
 }
 
-func (u *UserServiceImpl) Login(ctx context.Context, req LoginRequest) (res LoginResponse, err error) {
+func (u *UserServiceImpl) Login(ctx context.Context, req dto.LoginRequest) (res dto.LoginResponse, err error) {
 	user, err := u.UserRepository.GetUserByEmail(req.Email)
 	if err != nil {
 		log.Err(err).Msg("[Login - Service]")
@@ -75,7 +57,7 @@ func (u *UserServiceImpl) Login(ctx context.Context, req LoginRequest) (res Logi
 		log.Err(err).Msg("[Login - Service] Generate Token Error")
 		return
 	}
-	userSessionParams := &UserSession{
+	userSessionParams := &model.UserSession{
 		UserID:       user.ID,
 		AccessToken:  generateToken.Token,
 		RefreshToken: generateToken.RefreshToken,
@@ -87,7 +69,7 @@ func (u *UserServiceImpl) Login(ctx context.Context, req LoginRequest) (res Logi
 		return
 	}
 
-	res = LoginResponse{
+	res = dto.LoginResponse{
 		Token:        generateToken.Token,
 		RefreshToken: generateToken.RefreshToken,
 	}

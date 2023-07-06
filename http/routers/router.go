@@ -1,12 +1,12 @@
 package router
 
 import (
-	"dating-apps/internal/handlers"
+	"dating-apps/internal/handlers/user"
 	"github.com/go-chi/chi"
 )
 
 type DomainHandlers struct {
-	UserHandler handlers.UserHandler
+	UserHandler user.UserHandler
 }
 
 type Router struct {

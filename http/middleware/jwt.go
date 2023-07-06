@@ -10,6 +10,12 @@ import (
 	"strings"
 )
 
+type JwtKeyContext string
+
+const (
+	JwtKeyContextClaims JwtKeyContext = "jwt-claims"
+)
+
 type JWT struct {
 	Config *configs.Config
 }
@@ -35,11 +41,11 @@ func (j *JWT) VerifyToken(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "jwt-claims", jwtToken.Claims)
+		ctx := context.WithValue(r.Context(), JwtKeyContextClaims, jwtToken.Claims)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
 func GetClaimsUser(ctx context.Context) interface{} {
-	return ctx.Value("jwt-claims")
+	return ctx.Value(JwtKeyContextClaims)
 }
