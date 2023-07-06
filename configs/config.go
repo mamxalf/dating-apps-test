@@ -30,9 +30,6 @@ type Config struct {
 		RefreshTokenSecret string        `mapstructure:"REFRESH_TOKEN_SECRET"`
 		AccessTokenExpiry  time.Duration `mapstructure:"ACCESS_TOKEN_EXPIRY"`
 		RefreshTokenExpiry time.Duration `mapstructure:"REFRESH_TOKEN_EXPIRY"`
-		SetupPINSecret     string        `mapstructure:"SETUP_PIN_SECRET"`
-		GatewayTokenSecret string        `mapstructure:"GATEWAY_TOKEN_SECRET"`
-		GatewayTokenExpiry time.Duration `mapstructure:"GATEWAY_TOKEN_EXPIRY"`
 	}
 
 	Cache struct {

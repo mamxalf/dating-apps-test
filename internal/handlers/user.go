@@ -1,34 +1,64 @@
 package handlers
 
 import (
+	"dating-apps/http/middleware"
 	"dating-apps/internal/domains/user"
 	"dating-apps/shared/failure"
 	"dating-apps/shared/response"
 	"encoding/json"
 	"github.com/go-chi/chi"
+	"github.com/golang-jwt/jwt"
 	"github.com/rs/zerolog/log"
 	"net/http"
 )
 
 type UserHandler struct {
-	UserService user.UserService
+	UserService   user.UserService
+	JWTMiddleware *middleware.JWT
 }
 
-func ProvideUserHandler(userService user.UserService) UserHandler {
+func ProvideUserHandler(userService user.UserService, jwt *middleware.JWT) UserHandler {
 	return UserHandler{
-		UserService: userService,
+		UserService:   userService,
+		JWTMiddleware: jwt,
 	}
 }
 
 func (h *UserHandler) Router(r chi.Router) {
 	r.Route("/users", func(r chi.Router) {
 		r.Group(func(r chi.Router) {
-			//r.Use(h.AuthMiddleware.ClientCredential)
 			r.Post("/register", h.Register)
 			r.Post("/login", h.Login)
 		})
+		r.Group(func(r chi.Router) {
+			r.Use(h.JWTMiddleware.VerifyToken)
+			r.Get("/me", h.Me)
+		})
 
 	})
+}
+
+// Me get info user.
+// @Summary Me User
+// @Description This endpoint for Me User.
+// @Tags Users
+// @Accept  json
+// @Produce json
+// @Security BearerToken
+// @Success 200 {object} response.Base
+// @Failure 400 {object} response.Base
+// @Failure 404 {object} response.Base
+// @Failure 500 {object} response.Base
+// @Router /v1/users/me [get]
+func (h *UserHandler) Me(w http.ResponseWriter, r *http.Request) {
+	claimUser, ok := middleware.GetClaimsUser(r.Context()).(jwt.MapClaims)
+	if !ok {
+		log.Warn().Msg("invalid claim jwt")
+		err := failure.Unauthorized("invalid claim jwt")
+		response.WithError(w, err)
+		return
+	}
+	response.WithJSON(w, http.StatusOK, claimUser)
 }
 
 // Register sign up user.

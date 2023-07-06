@@ -4,7 +4,6 @@ import (
 	"dating-apps/configs"
 	"dating-apps/shared/constant"
 	"github.com/rs/zerolog/log"
-	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -170,17 +169,7 @@ func GenerateJWTGateway(user *UserData, tokenSecret string, tokenExpiry time.Dur
 	return
 }
 
-func VerifyJwtToken(authorization, tokenSecret string) (*jwt.Token, error) {
-	authToken := strings.Split(authorization, " ")
-	if len(authToken) != 2 {
-		log.Err(constant.ErrInvalidAuthorization).Msg("VerifyJwtToken")
-		return nil, constant.ErrInvalidAuthorization
-	}
-	if authToken[0] != DefaultAccessTokenType {
-		log.Err(constant.ErrInvalidAuthorization).Msg("VerifyJwtToken")
-		return nil, constant.ErrInvalidAuthorization
-	}
-	token := authToken[1]
+func VerifyJwtToken(token, tokenSecret string) (*jwt.Token, error) {
 	jwtToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			log.Err(constant.ErrInvalidAuthorization).Msg("VerifyJwtToken")

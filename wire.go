@@ -6,6 +6,7 @@ package main
 import (
 	"dating-apps/configs"
 	"dating-apps/http"
+	"dating-apps/http/middleware"
 	router "dating-apps/http/routers"
 	"dating-apps/infras"
 	"dating-apps/internal/domains/user"
@@ -34,9 +35,13 @@ var domains = wire.NewSet(
 )
 
 var routing = wire.NewSet(
-	wire.Struct(new(router.DomainHandlers), "UserHandler"),
+	wire.Struct(new(router.DomainHandlers), "*"),
 	handlers.ProvideUserHandler,
 	router.ProvideRouter,
+)
+
+var authMiddleware = wire.NewSet(
+	middleware.ProvideJWTMiddleware,
 )
 
 func InitializeService() *http.HTTP {
@@ -46,7 +51,7 @@ func InitializeService() *http.HTTP {
 		// persistences
 		persistences,
 		// middleware
-		//authMiddleware,
+		authMiddleware,
 		// domains
 		domains,
 		// routing

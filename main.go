@@ -10,6 +10,9 @@ import (
 
 var config *configs.Config
 
+// @securityDefinitions.apikey BearerToken
+// @in header
+// @name Authorization
 func main() {
 	logger.InitLogger()
 	// Initialize config
