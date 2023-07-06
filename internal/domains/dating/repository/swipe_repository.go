@@ -5,6 +5,7 @@ import (
 	"dating-apps/internal/domains/dating/model"
 	"dating-apps/shared/failure"
 	"fmt"
+	"github.com/jmoiron/sqlx"
 	"github.com/rs/zerolog/log"
 	"strings"
 )
@@ -15,10 +16,10 @@ var swipeQueries = struct {
 	insertSwipe: "INSERT INTO swipes %s VALUES %s",
 }
 
-func (repo *DatingRepositoryPostgres) SwipeProfile(ctx context.Context, swipe *model.NewSwipe) (err error) {
+func (repo *DatingRepositoryPostgres) SwipeProfile(_ context.Context, swipe *model.NewSwipe, dbTx *sqlx.Tx) (err error) {
 	fieldsStr, valueListStr, args := composeInsertFieldAndParamsSwipeProfile(*swipe)
 	commandQuery := fmt.Sprintf(swipeQueries.insertSwipe, fieldsStr, strings.Join(valueListStr, ","))
-	_, err = repo.exec(ctx, commandQuery, args)
+	_, err = dbTx.Exec(commandQuery, args...)
 	if err != nil {
 		log.Error().Err(err).Msg("[SwipeProfile - Repository] failed exec query")
 		err = failure.InternalError(err)

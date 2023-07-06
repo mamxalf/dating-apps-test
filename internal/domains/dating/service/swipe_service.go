@@ -9,11 +9,58 @@ import (
 )
 
 func (u *DatingServiceImpl) SwipeProfile(ctx context.Context, req dto.SwipeRequest) (err error) {
+	tx, err := u.DatingRepository.BeginTx()
+	if err != nil {
+		log.Err(err).Msg("[SwipeProfile] failed begin transactions")
+		return
+	}
+
+	err = u.setDatingCacheSchema(req)
+	if err != nil {
+		log.Err(err).Msg("[SwipeProfile - setDatingCacheSchema] failed cache data")
+		tx.Rollback()
+		return
+	}
+
 	newSwipe := req.ToModel()
-	if err = u.DatingRepository.SwipeProfile(ctx, &newSwipe); err != nil {
+	if err = u.DatingRepository.SwipeProfile(ctx, &newSwipe, tx); err != nil {
 		if failure.GetCode(err) != http.StatusNotFound {
 			log.Error().Interface("params", req).Err(err).Msg("[Register - Service]")
 		}
+		tx.Rollback()
 	}
+
+	tx.Commit()
+	return
+}
+
+func (u *DatingServiceImpl) setDatingCacheSchema(req dto.SwipeRequest) (err error) {
+	// trigger swipe
+	amount, err := u.DatingRepository.SwipeIncr(req.UserID)
+	if err != nil {
+		log.Err(err).Msg("[SwipeProfile] failed incr redis")
+		return
+	}
+
+	if amount > 10 {
+		err = failure.UnprocessableEntity("Reach limit for swipe profile!")
+		log.Warn().Err(err).Msg("[SwipeProfile]")
+		return
+	}
+
+	if amount == 1 {
+		err = u.DatingRepository.SwipeCacheExpiry(req.UserID)
+		if err != nil {
+			log.Err(err).Msg("[SwipeProfile] failed incr redis")
+			return
+		}
+	}
+
+	err = u.DatingRepository.SwipeCacheListID(req.UserID, req.ProfileID)
+	if err != nil {
+		log.Err(err).Msg("[SwipeProfile] failed push data")
+		return
+	}
+
 	return
 }

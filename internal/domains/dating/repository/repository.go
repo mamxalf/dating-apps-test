@@ -12,7 +12,7 @@ import (
 )
 
 type DatingRepository interface {
-	SwipeProfile(ctx context.Context, swipe *model.NewSwipe) (err error)
+	SwipeProfile(ctx context.Context, swipe *model.NewSwipe, dbTx *sqlx.Tx) (err error)
 
 	// SwipeIncr SwipeCacheListID SwipeCacheExpiry for cache data
 	SwipeIncr(userID uuid.UUID) (amount int64, err error)
