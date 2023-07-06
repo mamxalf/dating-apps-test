@@ -1,0 +1,6 @@
+BEGIN;
+
+DROP TABLE IF EXISTS swipes CASCADE;
+DROP TRIGGER IF EXISTS set_swipes_updated_at ON swipes CASCADE;
+
+COMMIT;
