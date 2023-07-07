@@ -54,7 +54,7 @@ func (h *DatingHandler) GetSwipeProfile(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	filter.UserID = userID
+	filter.SetDefaultFilter(userID)
 	res, err := h.DatingService.GetDatingProfile(r.Context(), filter)
 	if err != nil {
 		log.Warn().Err(err).Msg("[GetSwipeProfile Handler]")

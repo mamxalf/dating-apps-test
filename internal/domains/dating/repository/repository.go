@@ -13,7 +13,7 @@ import (
 
 type DatingRepository interface {
 	SwipeProfile(ctx context.Context, swipe *model.NewSwipe, dbTx *sqlx.Tx) (err error)
-	GetProfile(ctx context.Context, exceptID []string, limit int, offset int) (res []model.Profile, err error)
+	GetProfile(ctx context.Context, exceptID []string, page int, size int) (res []model.Profile, err error)
 
 	// SwipeIncr SwipeCacheListID SwipeCacheExpiry for cache data
 	SwipeIncr(userID uuid.UUID) (amount int64, err error)
@@ -39,7 +39,7 @@ func ProvideDatingRepositoryPostgres(db *infras.PostgresConn, cache *infras.Redi
 	return s
 }
 
-func (repo *DatingRepositoryPostgres) exec(ctx context.Context, command string, args []interface{}) (sql.Result, error) {
+func (repo *DatingRepositoryPostgres) exec(ctx context.Context, command string, args []interface{}) (sql.Result, error) { //nolint:unused
 	var (
 		stmt *sqlx.Stmt
 		err  error

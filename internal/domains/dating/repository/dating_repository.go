@@ -12,13 +12,13 @@ import (
 var datingQueries = struct {
 	getDatingProfile string
 }{
-	getDatingProfile: "SELECT * FROM user_profiles %s",
+	getDatingProfile: "SELECT *, COUNT(*) OVER() AS total_data FROM user_profiles %s",
 }
 
-func (repo *DatingRepositoryPostgres) GetProfile(_ context.Context, exceptID []string, limit int, offset int) (res []model.Profile, err error) {
+func (repo *DatingRepositoryPostgres) GetProfile(_ context.Context, exceptID []string, page int, size int) (res []model.Profile, err error) {
 	whereClauses := " WHERE profile_id NOT IN ($1) LIMIT $2 OFFSET $3"
 	query := fmt.Sprintf(datingQueries.getDatingProfile, whereClauses)
-	err = repo.DB.Read.Get(&res, query, exceptID, limit, offset)
+	err = repo.DB.Read.Get(&res, query, exceptID, size, (page-1)*size)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			err = failure.NotFound("Dating profile not found!")

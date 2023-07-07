@@ -13,4 +13,5 @@ type Profile struct {
 	Gender    string    `db:"gender"`
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
+	TotalData int       `db:"total_data"`
 }
