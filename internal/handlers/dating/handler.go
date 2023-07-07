@@ -23,6 +23,7 @@ func (h *DatingHandler) Router(r chi.Router) {
 		r.Group(func(r chi.Router) {
 			r.Use(h.JWTMiddleware.VerifyToken)
 			r.Post("/swipe", h.SwipeProfile)
+			r.Get("/swipe", h.GetSwipeProfile)
 		})
 
 	})
