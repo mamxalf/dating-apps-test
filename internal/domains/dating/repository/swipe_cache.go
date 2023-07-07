@@ -27,7 +27,7 @@ func (repo *DatingRepositoryPostgres) SwipeCacheListID(userID uuid.UUID, profile
 	return
 }
 
-func (repo *DatingRepositoryPostgres) GetSwipeCacheListIDSwipeCacheListID(userID uuid.UUID) (data []string, err error) {
+func (repo *DatingRepositoryPostgres) GetSwipeCacheListID(userID uuid.UUID) (data []string, err error) {
 	data, err = repo.Cache.Client.LRange(userID.String(), 0, -1).Result()
 	if err != nil {
 		log.Error().Err(err).Msg("[GetSwipeCacheListIDSwipeCacheListID - Repository] failed exec cache")

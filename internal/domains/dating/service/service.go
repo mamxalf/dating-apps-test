@@ -3,12 +3,14 @@ package service
 import (
 	"context"
 	"dating-apps/configs"
+	"dating-apps/internal/domains/dating/model"
 	"dating-apps/internal/domains/dating/model/dto"
 	"dating-apps/internal/domains/dating/repository"
 )
 
 type DatingService interface {
 	SwipeProfile(ctx context.Context, req dto.SwipeRequest) (err error)
+	GetDatingProfile(ctx context.Context, req dto.GetDatingProfileRequest) (res []model.Profile, err error)
 }
 
 type DatingServiceImpl struct {
