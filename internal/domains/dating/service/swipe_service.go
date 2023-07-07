@@ -18,7 +18,9 @@ func (u *DatingServiceImpl) SwipeProfile(ctx context.Context, req dto.SwipeReque
 	err = u.setDatingCacheSchema(req)
 	if err != nil {
 		log.Err(err).Msg("[SwipeProfile - setDatingCacheSchema] failed cache data")
-		tx.Rollback()
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			log.Fatal().Err(err).Msg("Rollback")
+		}
 		return
 	}
 
@@ -27,10 +29,15 @@ func (u *DatingServiceImpl) SwipeProfile(ctx context.Context, req dto.SwipeReque
 		if failure.GetCode(err) != http.StatusNotFound {
 			log.Error().Interface("params", req).Err(err).Msg("[Register - Service]")
 		}
-		tx.Rollback()
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			log.Fatal().Err(err).Msg("Rollback")
+		}
+		return
 	}
 
-	tx.Commit()
+	if commitErr := tx.Commit(); commitErr != nil {
+		log.Fatal().Err(err).Msg("Commit")
+	}
 	return
 }
 
@@ -48,7 +55,7 @@ func (u *DatingServiceImpl) setDatingCacheSchema(req dto.SwipeRequest) (err erro
 		return
 	}
 
-	if amount == 1 {
+	if amount <= 1 {
 		err = u.DatingRepository.SwipeCacheExpiry(req.UserID)
 		if err != nil {
 			log.Err(err).Msg("[SwipeProfile] failed incr redis")
