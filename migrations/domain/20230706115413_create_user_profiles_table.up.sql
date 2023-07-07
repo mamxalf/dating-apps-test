@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
                                              user_id UUID NOT NULL,
 
                                              full_name varchar NOT NULL,
-                                             age varchar NOT NULL,
+                                             age integer NOT NULL,
                                              gender varchar NOT NULL,
 
                                              created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
