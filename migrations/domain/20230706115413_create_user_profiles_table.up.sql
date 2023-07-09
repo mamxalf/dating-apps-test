@@ -2,7 +2,7 @@ BEGIN;
 
 CREATE TABLE IF NOT EXISTS user_profiles (
                                              id UUID NOT NULL PRIMARY KEY DEFAULT uuid_generate_v4(), -- uuid v4
-                                             user_id UUID NOT NULL,
+                                             user_id UUID NOT NULL UNIQUE,
 
                                              full_name varchar NOT NULL,
                                              age integer NOT NULL,

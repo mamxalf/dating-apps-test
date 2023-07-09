@@ -1,13 +1,10 @@
 package dto
 
-import (
-	"time"
-)
-
 type UserResponse struct {
-	Username   string    `json:"username"`
-	Email      string    `json:"email"`
-	IsVerified bool      `json:"is_verified"`
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
+	Username   string `json:"username"`
+	Email      string `json:"email"`
+	FullName   string `json:"full_name"`
+	Age        int    `json:"age"`
+	Gender     string `json:"gender"`
+	IsVerified bool   `json:"is_verified"`
 }

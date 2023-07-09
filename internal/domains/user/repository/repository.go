@@ -13,7 +13,9 @@ import (
 type UserRepository interface {
 	RegisterNewUser(ctx context.Context, register *model.UserRegister) (err error)
 	GetUserByEmail(email string) (user model.User, err error)
+	GetUserProfileByEmail(email string) (user model.FullUserProfile, err error)
 	CreateUserSession(ctx context.Context, userSession *model.UserSession) (err error)
+	InsertUserprofile(ctx context.Context, model *model.UserProfile) (err error)
 }
 
 type UserRepositoryPostgres struct {

@@ -14,9 +14,17 @@ import (
 var userQueries = struct {
 	registerNewUser string
 	getUser         string
+	getUserProfile  string
 }{
 	registerNewUser: "INSERT INTO users %s VALUES %s",
 	getUser:         "SELECT * FROM users %s",
+	getUserProfile: `
+		SELECT
+			u.id, u.username, u.email, u.is_verified,
+			up.full_name, up.age, up.gender
+		FROM users u
+			INNER JOIN user_profiles up on u.id = up.user_id
+		 %s`,
 }
 
 func (repo *UserRepositoryPostgres) GetUserByEmail(email string) (user model.User, err error) {
@@ -26,6 +34,23 @@ func (repo *UserRepositoryPostgres) GetUserByEmail(email string) (user model.Use
 	if err != nil {
 		if err == sql.ErrNoRows {
 			err = failure.NotFound("User not found!")
+			return
+		}
+		logger.ErrorWithStack(err)
+		err = failure.InternalError(err)
+		return
+	}
+
+	return
+}
+
+func (repo *UserRepositoryPostgres) GetUserProfileByEmail(email string) (user model.FullUserProfile, err error) {
+	whereClauses := " WHERE u.email = $1 LIMIT 1"
+	query := fmt.Sprintf(userQueries.getUserProfile, whereClauses)
+	err = repo.DB.Read.Get(&user, query, email)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			err = failure.NotFound("User Profile not found, Please fill User Profile first!")
 			return
 		}
 		logger.ErrorWithStack(err)

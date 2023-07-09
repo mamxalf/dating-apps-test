@@ -6,7 +6,7 @@ import (
 )
 
 func (u *UserServiceImpl) GetUserByEmail(email string) (res dto.UserResponse, err error) {
-	dataUser, err := u.UserRepository.GetUserByEmail(email)
+	dataUser, err := u.UserRepository.GetUserProfileByEmail(email)
 	if err != nil {
 		log.Err(err).Msg("[GetUserByEmail - Service]")
 		return
@@ -14,9 +14,10 @@ func (u *UserServiceImpl) GetUserByEmail(email string) (res dto.UserResponse, er
 	res = dto.UserResponse{
 		Username:   dataUser.Username,
 		Email:      dataUser.Email,
+		FullName:   dataUser.FullName,
+		Age:        dataUser.Age,
+		Gender:     dataUser.Gender,
 		IsVerified: dataUser.IsVerified,
-		CreatedAt:  dataUser.CreatedAt,
-		UpdatedAt:  dataUser.UpdatedAt,
 	}
 	return
 }

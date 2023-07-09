@@ -31,6 +31,7 @@ func (h *UserHandler) Router(r chi.Router) {
 		r.Group(func(r chi.Router) {
 			r.Use(h.JWTMiddleware.VerifyToken)
 			r.Get("/me", h.Me)
+			r.Post("/profile", h.UpdateUserProfile)
 		})
 
 	})

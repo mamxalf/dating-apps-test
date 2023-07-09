@@ -11,6 +11,7 @@ type UserService interface {
 	Register(ctx context.Context, req dto.RegisterRequest) (err error)
 	Login(ctx context.Context, req dto.LoginRequest) (res dto.LoginResponse, err error)
 	GetUserByEmail(email string) (res dto.UserResponse, err error)
+	UpdateUserProfile(ctx context.Context, req dto.UpdateUserProfileRequest) (err error)
 }
 
 type UserServiceImpl struct {
