@@ -15,13 +15,19 @@ const (
 )
 
 func (u *DatingServiceImpl) SwipeProfile(ctx context.Context, req dto.SwipeRequest) (err error) {
+	user, err := u.UserRepository.GetUserProfileByUserID(req.UserID)
+	if err != nil {
+		log.Err(err).Msg("[GetDatingProfile]")
+		return
+	}
+
 	tx, err := u.DatingRepository.BeginTx()
 	if err != nil {
 		log.Err(err).Msg("[SwipeProfile] failed begin transactions")
 		return
 	}
 
-	err = u.setDatingCacheSchema(req)
+	err = u.setDatingCacheSchema(req, user.IsVerified)
 	if err != nil {
 		log.Err(err).Msg("[SwipeProfile - setDatingCacheSchema] failed cache data")
 		if rollbackErr := tx.Rollback(); rollbackErr != nil {
@@ -47,7 +53,7 @@ func (u *DatingServiceImpl) SwipeProfile(ctx context.Context, req dto.SwipeReque
 	return
 }
 
-func (u *DatingServiceImpl) setDatingCacheSchema(req dto.SwipeRequest) (err error) {
+func (u *DatingServiceImpl) setDatingCacheSchema(req dto.SwipeRequest, isVerified bool) (err error) {
 	// trigger swipe
 	listSwipedIDS, err := u.DatingRepository.GetSwipeCacheListID(req.UserID)
 	if err != nil {
@@ -68,10 +74,12 @@ func (u *DatingServiceImpl) setDatingCacheSchema(req dto.SwipeRequest) (err erro
 		return
 	}
 
-	if amount > maxAttempt {
-		err = failure.UnprocessableEntity("Reach limit for swipe profile!")
-		log.Warn().Err(err).Msg("[SwipeProfile]")
-		return
+	if !isVerified {
+		if amount > maxAttempt {
+			err = failure.UnprocessableEntity("Reach limit for swipe profile!")
+			log.Warn().Err(err).Msg("[SwipeProfile]")
+			return
+		}
 	}
 
 	if amount <= 1 {
