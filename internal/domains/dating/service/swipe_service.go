@@ -5,6 +5,7 @@ import (
 	"dating-apps/internal/domains/dating/model/dto"
 	"dating-apps/shared/failure"
 	"net/http"
+	"strings"
 
 	"github.com/rs/zerolog/log"
 )
@@ -48,6 +49,19 @@ func (u *DatingServiceImpl) SwipeProfile(ctx context.Context, req dto.SwipeReque
 
 func (u *DatingServiceImpl) setDatingCacheSchema(req dto.SwipeRequest) (err error) {
 	// trigger swipe
+	listSwipedIDS, err := u.DatingRepository.GetSwipeCacheListID(req.UserID)
+	if err != nil {
+		err = failure.InternalError(err)
+		log.Err(err).Msg("[SwipeProfile] failed get swipe cache")
+		return
+	}
+
+	if strings.Contains(strings.Join(listSwipedIDS, ","), req.ProfileID.String()) {
+		err = failure.BadRequestFromString("swipe twice in a profile")
+		log.Err(err).Msg("[SwipeProfile] swipe twice in a profile")
+		return
+	}
+
 	amount, err := u.DatingRepository.SwipeIncr(req.UserID)
 	if err != nil {
 		log.Err(err).Msg("[SwipeProfile] failed incr redis")
