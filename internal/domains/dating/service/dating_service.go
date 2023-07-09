@@ -8,13 +8,26 @@ import (
 )
 
 func (u *DatingServiceImpl) GetDatingProfile(ctx context.Context, req dto.GetDatingProfileRequest) (result dto.ResponseProfile, err error) {
+	user, err := u.UserRepository.GetUserProfileByUserID(req.UserID)
+	if err != nil {
+		log.Err(err).Msg("[GetDatingProfile]")
+		return
+	}
+
 	exceptIDs, err := u.DatingRepository.GetSwipeCacheListID(req.UserID)
 	if err != nil {
 		log.Err(err).Msg("[GetDatingProfile] failed get swipe cache")
 		return
 	}
 
-	res, err := u.DatingRepository.GetProfile(ctx, exceptIDs, "male", req.Page, req.Size)
+	var findByGender string
+	if user.Gender == "male" {
+		findByGender = "female"
+	} else {
+		findByGender = "male"
+	}
+
+	res, err := u.DatingRepository.GetProfile(ctx, exceptIDs, findByGender, req.Page, req.Size)
 	if err != nil {
 		log.Err(err).Msg("[GetDatingProfile] failed get profile")
 		return

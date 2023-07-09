@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/google/uuid"
+
 	"github.com/rs/zerolog/log"
 )
 
@@ -26,6 +28,23 @@ var userQueries = struct {
 		FROM users u
 			INNER JOIN user_profiles up on u.id = up.user_id
 		 %s`,
+}
+
+func (repo *UserRepositoryPostgres) GetUserProfileByUserID(userID uuid.UUID) (user model.FullUserProfile, err error) {
+	whereClauses := " WHERE u.id = $1 LIMIT 1"
+	query := fmt.Sprintf(userQueries.getUserProfile, whereClauses)
+	err = repo.DB.Read.Get(&user, query, userID.String())
+	if err != nil {
+		if err == sql.ErrNoRows {
+			err = failure.NotFound("User not found!")
+			return
+		}
+		logger.ErrorWithStack(err)
+		err = failure.InternalError(err)
+		return
+	}
+
+	return
 }
 
 func (repo *UserRepositoryPostgres) GetUserByEmail(email string) (user model.User, err error) {
