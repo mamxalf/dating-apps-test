@@ -7,8 +7,9 @@ import (
 	"dating-apps/shared/failure"
 	"dating-apps/shared/logger"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"strings"
+
+	"github.com/rs/zerolog/log"
 )
 
 var userQueries = struct {
@@ -73,9 +74,9 @@ func (repo *UserRepositoryPostgres) RegisterNewUser(ctx context.Context, registe
 	return
 }
 
-func composeInsertFieldAndParamsUser(register ...model.UserRegister) (fieldStr string, valueListStr []string, args []interface{}) {
+func composeInsertFieldAndParamsUser(register ...model.UserRegister) (fieldStr string, valueListStr []string, args []any) {
 	var (
-		fields []string = []string{
+		fields = []string{
 			"username",
 			"email",
 			"password",

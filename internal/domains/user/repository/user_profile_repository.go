@@ -5,8 +5,9 @@ import (
 	"dating-apps/internal/domains/user/model"
 	"dating-apps/shared/failure"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"strings"
+
+	"github.com/rs/zerolog/log"
 )
 
 var userProfileQueries = struct {
@@ -15,8 +16,8 @@ var userProfileQueries = struct {
 	insertUserProfile: "INSERT INTO user_profiles %s VALUES %s",
 }
 
-func (repo *UserRepositoryPostgres) InsertUserprofile(ctx context.Context, model *model.UserProfile) (err error) {
-	fieldsStr, valueListStr, args := composeInsertFieldAndParamsUserProfile(*model)
+func (repo *UserRepositoryPostgres) InsertUserprofile(ctx context.Context, newModel *model.UserProfile) (err error) {
+	fieldsStr, valueListStr, args := composeInsertFieldAndParamsUserProfile(*newModel)
 	commandQuery := fmt.Sprintf(userProfileQueries.insertUserProfile, fieldsStr, strings.Join(valueListStr, ","))
 	_, err = repo.exec(ctx, commandQuery, args)
 	if err != nil {
@@ -28,9 +29,9 @@ func (repo *UserRepositoryPostgres) InsertUserprofile(ctx context.Context, model
 	return
 }
 
-func composeInsertFieldAndParamsUserProfile(userSession ...model.UserProfile) (fieldStr string, valueListStr []string, args []interface{}) {
+func composeInsertFieldAndParamsUserProfile(userSession ...model.UserProfile) (fieldStr string, valueListStr []string, args []any) {
 	var (
-		fields []string = []string{
+		fields = []string{
 			"user_id",
 			"full_name",
 			"age",

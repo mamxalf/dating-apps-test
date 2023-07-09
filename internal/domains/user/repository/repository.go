@@ -6,6 +6,7 @@ import (
 	"dating-apps/infras"
 	"dating-apps/internal/domains/user/model"
 	"dating-apps/shared/failure"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/rs/zerolog/log"
 )
@@ -28,7 +29,7 @@ func ProvideUserRepositoryPostgres(db *infras.PostgresConn) *UserRepositoryPostg
 	return s
 }
 
-func (repo *UserRepositoryPostgres) exec(ctx context.Context, command string, args []interface{}) (sql.Result, error) {
+func (repo *UserRepositoryPostgres) exec(ctx context.Context, command string, args []any) (sql.Result, error) {
 	var (
 		stmt *sqlx.Stmt
 		err  error

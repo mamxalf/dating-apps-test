@@ -1,9 +1,10 @@
 package token
 
 import (
+	"time"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
-	"time"
 )
 
 type UserData struct {

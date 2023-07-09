@@ -6,6 +6,7 @@ import (
 	"dating-apps/infras"
 	"dating-apps/internal/domains/dating/model"
 	"dating-apps/shared/failure"
+
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/rs/zerolog/log"
@@ -13,7 +14,7 @@ import (
 
 type DatingRepository interface {
 	SwipeProfile(ctx context.Context, swipe *model.NewSwipe, dbTx *sqlx.Tx) (err error)
-	GetProfile(ctx context.Context, exceptID []string, page int, size int) (res []model.Profile, err error)
+	GetProfile(ctx context.Context, exceptID []string, gender string, page int, size int) (res []model.Profile, err error)
 
 	// SwipeIncr SwipeCacheListID SwipeCacheExpiry for cache data
 	SwipeIncr(userID uuid.UUID) (amount int64, err error)
@@ -39,7 +40,7 @@ func ProvideDatingRepositoryPostgres(db *infras.PostgresConn, cache *infras.Redi
 	return s
 }
 
-func (repo *DatingRepositoryPostgres) exec(ctx context.Context, command string, args []interface{}) (sql.Result, error) { //nolint:unused
+func (repo *DatingRepositoryPostgres) exec(ctx context.Context, command string, args []any) (sql.Result, error) { //nolint:unused
 	var (
 		stmt *sqlx.Stmt
 		err  error

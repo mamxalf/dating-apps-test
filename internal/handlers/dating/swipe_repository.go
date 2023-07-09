@@ -6,10 +6,11 @@ import (
 	"dating-apps/shared/failure"
 	"dating-apps/shared/response"
 	"encoding/json"
+	"net/http"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
-	"net/http"
 )
 
 // SwipeProfile get info user.

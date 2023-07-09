@@ -3,8 +3,9 @@ package token
 import (
 	"dating-apps/configs"
 	"dating-apps/shared/constant"
-	"github.com/rs/zerolog/log"
 	"time"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
@@ -92,7 +93,7 @@ func generateRefresh(user *UserData, refreshTokenSecret string, refreshTokenExpi
 func ExtractClaims(secret, tokenStr string) (jwt.MapClaims, bool) {
 	hmacSecretString := secret
 	hmacSecret := []byte(hmacSecretString)
-	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (any, error) {
 		return hmacSecret, nil
 	})
 
@@ -105,7 +106,6 @@ func ExtractClaims(secret, tokenStr string) (jwt.MapClaims, bool) {
 	}
 	log.Err(err).Msg("Invalid JWT Token")
 	return nil, false
-
 }
 
 // GenerateVerifyEmailToken will generate reset password token
@@ -170,7 +170,7 @@ func GenerateJWTGateway(user *UserData, tokenSecret string, tokenExpiry time.Dur
 }
 
 func VerifyJwtToken(token, tokenSecret string) (*jwt.Token, error) {
-	jwtToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+	jwtToken, err := jwt.Parse(token, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			log.Err(constant.ErrInvalidAuthorization).Msg("VerifyJwtToken")
 			return nil, constant.ErrInvalidAuthorization
@@ -200,5 +200,4 @@ func ExtractTokenMetadata(token *jwt.Token) (*JWTToken, error) {
 	return &JWTToken{
 		Username: name,
 	}, nil
-
 }

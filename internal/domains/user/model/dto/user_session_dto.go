@@ -4,6 +4,7 @@ import (
 	"dating-apps/internal/domains/user/model"
 	"dating-apps/shared"
 	"dating-apps/shared/util"
+
 	"github.com/rs/zerolog/log"
 )
 

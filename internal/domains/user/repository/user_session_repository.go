@@ -5,8 +5,9 @@ import (
 	"dating-apps/internal/domains/user/model"
 	"dating-apps/shared/failure"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"strings"
+
+	"github.com/rs/zerolog/log"
 )
 
 var userSessionQueries = struct {
@@ -27,9 +28,9 @@ func (repo *UserRepositoryPostgres) CreateUserSession(ctx context.Context, userS
 	return
 }
 
-func composeInsertFieldAndParamsUserSession(userSession ...model.UserSession) (fieldStr string, valueListStr []string, args []interface{}) {
+func composeInsertFieldAndParamsUserSession(userSession ...model.UserSession) (fieldStr string, valueListStr []string, args []any) {
 	var (
-		fields []string = []string{
+		fields = []string{
 			"user_id",
 			"access_token",
 			"refresh_token",

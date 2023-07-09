@@ -57,10 +57,12 @@ type Config struct {
 	}
 
 	Server struct {
-		Env      string `mapstructure:"ENV"`
-		LogLevel string `mapstructure:"LOG_LEVEL"`
-		Port     string `mapstructure:"PORT"`
-		Shutdown struct {
+		Env          string `mapstructure:"ENV"`
+		LogLevel     string `mapstructure:"LOG_LEVEL"`
+		Port         string `mapstructure:"PORT"`
+		ReadTimeout  int    `mapstructure:"READ_TIMEOUT"`
+		WriteTimeout int    `mapstructure:"WRITE_TIMEOUT"`
+		Shutdown     struct {
 			CleanupPeriodSeconds int64 `mapstructure:"CLEANUP_PERIOD_SECONDS"`
 			GracePeriodSeconds   int64 `mapstructure:"GRACE_PERIOD_SECONDS"`
 		}

@@ -46,6 +46,6 @@ func (j *JWT) VerifyToken(next http.Handler) http.Handler {
 	})
 }
 
-func GetClaimsUser(ctx context.Context) interface{} {
+func GetClaimsUser(ctx context.Context) any {
 	return ctx.Value(JwtKeyContextClaims)
 }

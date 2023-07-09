@@ -3,6 +3,7 @@ package dto
 import (
 	"dating-apps/internal/domains/user/model"
 	"dating-apps/shared"
+
 	"github.com/google/uuid"
 )
 

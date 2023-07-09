@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"dating-apps/internal/domains/dating/model/dto"
+
 	"github.com/rs/zerolog/log"
 )
 
@@ -13,7 +14,7 @@ func (u *DatingServiceImpl) GetDatingProfile(ctx context.Context, req dto.GetDat
 		return
 	}
 
-	res, err := u.DatingRepository.GetProfile(ctx, exceptIDs, req.Page, req.Size)
+	res, err := u.DatingRepository.GetProfile(ctx, exceptIDs, "male", req.Page, req.Size)
 	if err != nil {
 		log.Err(err).Msg("[GetDatingProfile] failed get profile")
 		return

@@ -5,8 +5,9 @@ import (
 	"dating-apps/shared/failure"
 	"dating-apps/shared/response"
 	"encoding/json"
-	"github.com/rs/zerolog/log"
 	"net/http"
+
+	"github.com/rs/zerolog/log"
 )
 
 // Register sign up user.

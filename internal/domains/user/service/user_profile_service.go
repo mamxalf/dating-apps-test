@@ -4,8 +4,9 @@ import (
 	"context"
 	"dating-apps/internal/domains/user/model/dto"
 	"dating-apps/shared/failure"
-	"github.com/rs/zerolog/log"
 	"net/http"
+
+	"github.com/rs/zerolog/log"
 )
 
 func (u *UserServiceImpl) UpdateUserProfile(ctx context.Context, req dto.UpdateUserProfileRequest) (err error) {

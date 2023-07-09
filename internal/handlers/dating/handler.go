@@ -3,6 +3,7 @@ package dating
 import (
 	"dating-apps/http/middleware"
 	"dating-apps/internal/domains/dating/service"
+
 	"github.com/go-chi/chi"
 )
 
@@ -25,6 +26,5 @@ func (h *DatingHandler) Router(r chi.Router) {
 			r.Post("/swipe", h.SwipeProfile)
 			r.Get("/swipe", h.GetSwipeProfile)
 		})
-
 	})
 }

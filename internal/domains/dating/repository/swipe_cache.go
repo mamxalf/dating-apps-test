@@ -2,9 +2,10 @@ package repository
 
 import (
 	"dating-apps/shared/failure"
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
-	"time"
 )
 
 func (repo *DatingRepositoryPostgres) SwipeIncr(userID uuid.UUID) (amount int64, err error) {
@@ -17,7 +18,7 @@ func (repo *DatingRepositoryPostgres) SwipeIncr(userID uuid.UUID) (amount int64,
 	return
 }
 
-func (repo *DatingRepositoryPostgres) SwipeCacheListID(userID uuid.UUID, profileID uuid.UUID) (err error) {
+func (repo *DatingRepositoryPostgres) SwipeCacheListID(userID, profileID uuid.UUID) (err error) {
 	err = repo.Cache.Client.RPush(userID.String(), profileID).Err()
 	if err != nil {
 		log.Error().Err(err).Msg("[SwipeCacheListID - Repository] failed exec cache")

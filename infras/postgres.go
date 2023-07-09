@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"dating-apps/configs"
+
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/rs/zerolog/log"
@@ -23,13 +24,13 @@ type PostgresConn struct {
 func ProvidePostgresConn(config *configs.Config) *PostgresConn {
 	// actually you can split between read and write depends your requirements :ok:
 	return &PostgresConn{
-		Read:  CreatePostgresConn("read", *config),
-		Write: CreatePostgresConn("write", *config),
+		Read:  CreatePostgresConn("read", config),
+		Write: CreatePostgresConn("write", config),
 	}
 }
 
 // CreatePostgresConn creates a database connection for read access.
-func CreatePostgresConn(connType string, config configs.Config) *sqlx.DB {
+func CreatePostgresConn(connType string, config *configs.Config) *sqlx.DB {
 	return CreatePostgresDBConnection(
 		connType,
 		config.DB.PG.User,
@@ -41,11 +42,14 @@ func CreatePostgresConn(connType string, config configs.Config) *sqlx.DB {
 		config.DB.PG.MaxConnLifetime,
 		config.DB.PG.MaxIdleConn,
 		config.DB.PG.MaxOpenConn)
-
 }
 
 // CreatePostgresDBConnection creates a database connection.
-func CreatePostgresDBConnection(connType, username, password, host, port, dbName, sslmode string, maxConnLifetime time.Duration, maxIdleConn, maxOpenConn int) *sqlx.DB {
+func CreatePostgresDBConnection(
+	connType, username, password, host, port, dbName, sslmode string,
+	maxConnLifetime time.Duration,
+	maxIdleConn, maxOpenConn int,
+) *sqlx.DB {
 	conn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		host,

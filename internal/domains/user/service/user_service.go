@@ -2,6 +2,7 @@ package service
 
 import (
 	"dating-apps/internal/domains/user/model/dto"
+
 	"github.com/rs/zerolog/log"
 )
 

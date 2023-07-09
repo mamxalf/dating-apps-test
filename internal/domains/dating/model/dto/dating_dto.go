@@ -4,6 +4,7 @@ import (
 	"dating-apps/internal/domains/dating/model"
 	"dating-apps/shared"
 	"dating-apps/shared/model/dto"
+
 	"github.com/google/uuid"
 )
 
@@ -31,6 +32,6 @@ func (r *GetDatingProfileRequest) SetDefaultFilter(userID uuid.UUID) {
 }
 
 type ResponseProfile struct {
-	Profiles []model.Profile
+	Profiles []model.Profile `json:"profiles"`
 	dto.Pagination
 }

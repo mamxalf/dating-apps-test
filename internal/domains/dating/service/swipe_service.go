@@ -4,8 +4,13 @@ import (
 	"context"
 	"dating-apps/internal/domains/dating/model/dto"
 	"dating-apps/shared/failure"
-	"github.com/rs/zerolog/log"
 	"net/http"
+
+	"github.com/rs/zerolog/log"
+)
+
+const (
+	maxAttempt = 10
 )
 
 func (u *DatingServiceImpl) SwipeProfile(ctx context.Context, req dto.SwipeRequest) (err error) {
@@ -49,7 +54,7 @@ func (u *DatingServiceImpl) setDatingCacheSchema(req dto.SwipeRequest) (err erro
 		return
 	}
 
-	if amount > 10 {
+	if amount > maxAttempt {
 		err = failure.UnprocessableEntity("Reach limit for swipe profile!")
 		log.Warn().Err(err).Msg("[SwipeProfile]")
 		return

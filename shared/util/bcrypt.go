@@ -4,9 +4,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+const (
+	// cost for
+	cost = 10
+)
+
 // HashPassword will generate hashed password
 func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), cost)
 	return string(bytes), err
 }
 
@@ -18,7 +23,7 @@ func CheckPasswordHash(password, hash string) error {
 
 // HashOTP will generate hashed password
 func HashOTP(otp string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(otp), 10)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(otp), cost)
 	return string(bytes), err
 }
 
@@ -31,7 +36,7 @@ func CheckOTPHash(otp, hash string) error {
 
 // HashPIN will generate hashed password
 func HashPIN(pin string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(pin), 10)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(pin), cost)
 	return string(bytes), err
 }
 

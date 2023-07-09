@@ -3,6 +3,7 @@ package user
 import (
 	"dating-apps/http/middleware"
 	"dating-apps/internal/domains/user/service"
+
 	"github.com/go-chi/chi"
 )
 
@@ -24,7 +25,6 @@ func (h *UserHandler) Router(r chi.Router) {
 			r.Post("/register", h.Register)
 			r.Post("/login", h.Login)
 		})
-
 	})
 
 	r.Route("/users", func(r chi.Router) {
@@ -33,6 +33,5 @@ func (h *UserHandler) Router(r chi.Router) {
 			r.Get("/me", h.Me)
 			r.Post("/profile", h.UpdateUserProfile)
 		})
-
 	})
 }

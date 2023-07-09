@@ -8,8 +8,9 @@ import (
 	"dating-apps/shared/token"
 	"dating-apps/shared/util"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"net/http"
+
+	"github.com/rs/zerolog/log"
 )
 
 func (u *UserServiceImpl) Register(ctx context.Context, req dto.RegisterRequest) (err error) {

@@ -5,11 +5,12 @@ import (
 	"dating-apps/internal/domains/dating/model/dto"
 	"dating-apps/shared/failure"
 	"dating-apps/shared/response"
+	"net/http"
+	"strconv"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
-	"net/http"
-	"strconv"
 )
 
 // GetSwipeProfile get info user.

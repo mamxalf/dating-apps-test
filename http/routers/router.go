@@ -3,6 +3,7 @@ package router
 import (
 	"dating-apps/internal/handlers/dating"
 	"dating-apps/internal/handlers/user"
+
 	"github.com/go-chi/chi"
 )
 

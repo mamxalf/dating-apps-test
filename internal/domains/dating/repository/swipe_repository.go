@@ -5,9 +5,10 @@ import (
 	"dating-apps/internal/domains/dating/model"
 	"dating-apps/shared/failure"
 	"fmt"
+	"strings"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/rs/zerolog/log"
-	"strings"
 )
 
 var swipeQueries = struct {
@@ -28,9 +29,9 @@ func (repo *DatingRepositoryPostgres) SwipeProfile(_ context.Context, swipe *mod
 	return
 }
 
-func composeInsertFieldAndParamsSwipeProfile(register ...model.NewSwipe) (fieldStr string, valueListStr []string, args []interface{}) {
+func composeInsertFieldAndParamsSwipeProfile(register ...model.NewSwipe) (fieldStr string, valueListStr []string, args []any) {
 	var (
-		fields []string = []string{
+		fields = []string{
 			"user_id",
 			"profile_id",
 			"is_like",

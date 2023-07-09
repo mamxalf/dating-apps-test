@@ -7,6 +7,9 @@ import (
 	"dating-apps/shared/failure"
 	"dating-apps/shared/logger"
 	"fmt"
+	"strings"
+
+	"github.com/google/uuid"
 )
 
 var datingQueries = struct {
@@ -15,10 +18,16 @@ var datingQueries = struct {
 	getDatingProfile: "SELECT *, COUNT(*) OVER() AS total_data FROM user_profiles %s",
 }
 
-func (repo *DatingRepositoryPostgres) GetProfile(_ context.Context, exceptID []string, page int, size int) (res []model.Profile, err error) {
-	whereClauses := " WHERE profile_id NOT IN ($1) LIMIT $2 OFFSET $3"
+func (repo *DatingRepositoryPostgres) GetProfile(
+	_ context.Context,
+	exceptID []string, gender string, page, size int,
+) (res []model.Profile, err error) {
+	whereClauses := " WHERE id NOT IN ($1) AND gender = $2 LIMIT $3 OFFSET $4"
 	query := fmt.Sprintf(datingQueries.getDatingProfile, whereClauses)
-	err = repo.DB.Read.Get(&res, query, exceptID, size, (page-1)*size)
+	if len(exceptID) == 0 {
+		exceptID = []string{uuid.Nil.String()}
+	}
+	err = repo.DB.Read.Select(&res, query, strings.Join(exceptID, ","), gender, size, (page-1)*size)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			err = failure.NotFound("Dating profile not found!")

@@ -8,13 +8,15 @@ import (
 	"dating-apps/shared/logger"
 	"dating-apps/shared/response"
 	"fmt"
+	"net/http"
+	"strings"
+	"time"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 	"github.com/rs/zerolog/log"
 	httpSwagger "github.com/swaggo/http-swagger"
-	"net/http"
-	"strings"
 )
 
 // HTTP is the HTTP server.
@@ -26,11 +28,11 @@ type HTTP struct {
 }
 
 // ProvideHTTP is the provider for HTTP.
-func ProvideHTTP(db *infras.PostgresConn, config *configs.Config, router router.Router) *HTTP {
+func ProvideHTTP(db *infras.PostgresConn, config *configs.Config, rtr router.Router) *HTTP {
 	return &HTTP{
 		DB:     db,
 		Config: config,
-		Router: router,
+		Router: rtr,
 	}
 }
 
@@ -45,7 +47,13 @@ func (h *HTTP) SetupAndServe() {
 
 	log.Info().Str("port", h.Config.Server.Port).Msg("Starting up HTTP server.")
 
-	err := http.ListenAndServe(":"+h.Config.Server.Port, h.mux)
+	server := &http.Server{
+		Addr:         ":" + h.Config.Server.Port,
+		Handler:      h.mux,
+		ReadTimeout:  time.Duration(h.Config.Server.ReadTimeout) * time.Second,  // Set your desired read timeout
+		WriteTimeout: time.Duration(h.Config.Server.WriteTimeout) * time.Second, // Set your desired write timeout
+	}
+	err := server.ListenAndServe()
 	if err != nil {
 		log.Err(err)
 	}
@@ -114,7 +122,7 @@ func (h *HTTP) setupCORS() {
 // @Success 200 {object} response.Base
 // @Failure 503 {object} response.Base
 // @Router /health [get]
-func (h *HTTP) HealthCheck(w http.ResponseWriter, r *http.Request) {
+func (h *HTTP) HealthCheck(w http.ResponseWriter, _ *http.Request) {
 	if err := h.DB.Read.Ping(); err != nil {
 		logger.ErrorWithStack(err)
 		response.WithUnhealthy(w)

@@ -4,8 +4,9 @@ import (
 	"dating-apps/shared/failure"
 	"encoding/json"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"net/http"
+
+	"github.com/rs/zerolog/log"
 )
 
 type Failure struct {
@@ -14,9 +15,9 @@ type Failure struct {
 }
 
 type Base struct {
-	Data    *interface{} `json:"data,omitempty"`
-	Error   *string      `json:"error,omitempty"`
-	Message *string      `json:"message,omitempty"`
+	Data    *any    `json:"data,omitempty"`
+	Error   *string `json:"error,omitempty"`
+	Message *string `json:"message,omitempty"`
 }
 
 // NoContent sends a response without any content
@@ -30,7 +31,7 @@ func WithMessage(w http.ResponseWriter, code int, message string) {
 }
 
 // WithJSON sends a response containing a JSON object
-func WithJSON(w http.ResponseWriter, code int, jsonPayload interface{}) {
+func WithJSON(w http.ResponseWriter, code int, jsonPayload any) {
 	respond(w, code, Base{Data: &jsonPayload})
 }
 
@@ -55,7 +56,7 @@ func (e *Failure) Error() string {
 	return fmt.Sprintf("%s: %s", http.StatusText(e.Code), e.Message)
 }
 
-func respond(w http.ResponseWriter, code int, payload interface{}) {
+func respond(w http.ResponseWriter, code int, payload any) {
 	response, _ := json.Marshal(payload)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
