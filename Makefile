@@ -14,7 +14,7 @@ lint-prepare:
 	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s latest
 
 lint:
-	go run github.com/golangci/golangci-lint/cmd/golangci-lint run ./...
+	./bin/golangci-lint run -v
 
 generate:
 	go generate ./...
