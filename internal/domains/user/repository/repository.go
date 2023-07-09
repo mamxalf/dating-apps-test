@@ -20,6 +20,7 @@ type UserRepository interface {
 	GetUserProfileByEmail(email string) (user model.FullUserProfile, err error)
 	CreateUserSession(ctx context.Context, userSession *model.UserSession) (err error)
 	InsertUserprofile(ctx context.Context, model *model.UserProfile) (err error)
+	SubscribeUserPremium(ctx context.Context, userID uuid.UUID) (err error)
 }
 
 type UserRepositoryPostgres struct {

@@ -5,6 +5,8 @@ import (
 	"dating-apps/configs"
 	"dating-apps/internal/domains/user/model/dto"
 	"dating-apps/internal/domains/user/repository"
+
+	"github.com/google/uuid"
 )
 
 type UserService interface {
@@ -12,6 +14,7 @@ type UserService interface {
 	Login(ctx context.Context, req dto.LoginRequest) (res dto.LoginResponse, err error)
 	GetUserByEmail(email string) (res dto.UserResponse, err error)
 	UpdateUserProfile(ctx context.Context, req dto.UpdateUserProfileRequest) (err error)
+	SubscribeUserPremium(ctx context.Context, userID uuid.UUID) (err error)
 }
 
 type UserServiceImpl struct {

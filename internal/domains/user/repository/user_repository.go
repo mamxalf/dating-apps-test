@@ -18,6 +18,7 @@ var userQueries = struct {
 	registerNewUser string
 	getUser         string
 	getUserProfile  string
+	updateUser      string
 }{
 	registerNewUser: "INSERT INTO users %s VALUES %s",
 	getUser:         "SELECT * FROM users %s",
@@ -28,6 +29,7 @@ var userQueries = struct {
 		FROM users u
 			INNER JOIN user_profiles up on u.id = up.user_id
 		 %s`,
+	updateUser: "UPDATE users SET %s WHERE %s",
 }
 
 func (repo *UserRepositoryPostgres) GetUserProfileByUserID(userID uuid.UUID) (user model.FullUserProfile, err error) {
