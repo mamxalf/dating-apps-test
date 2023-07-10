@@ -38,3 +38,9 @@ migrate_drop:
 migrate_force:
 	@read -p "please enter the migration version (the migration filename prefix): " VERSION \
   	&& migrate -path ./migrations/domain -database "$(DB_CONN)" force $${VERSION}
+
+docker_dev:
+	@docker compose up -d
+
+docker_dev_off:
+	@docker compose down
