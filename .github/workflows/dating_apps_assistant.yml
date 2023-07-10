@@ -28,6 +28,12 @@ jobs:
       - name: copy .env.example to .env
         run: cp .env.example .env
 
+      - name: install wire
+        run: go get -u github.com/google/wire/cmd/wire
+
+      - name: generate wire
+        run: wire
+
       - name: Lint Prepare
         run: make lint-prepare
 
