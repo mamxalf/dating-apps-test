@@ -34,9 +34,6 @@ jobs:
       - name: generate wire
         run: go run github.com/google/wire/cmd/wire
 
-      - name: generate wire
-        run: wire
-
       - name: Lint Prepare
         run: make lint-prepare
 
