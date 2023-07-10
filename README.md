@@ -85,4 +85,5 @@ make migrate_up
 make dev
 ```
 4. open localhost with port you have configured at .env and swagger path to see the api documentation, example: http://localhost:8080/swagger/index.html
+    *you can import also postman in root directory (postman_collection.json)
 5. Viola!
