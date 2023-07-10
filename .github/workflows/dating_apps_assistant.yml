@@ -28,6 +28,12 @@ jobs:
       - name: copy .env.example to .env
         run: cp .env.example .env
 
+      - name: install swagger
+        run: go get -u github.com/swaggo/swag/cmd/swag
+
+      - name: generate swagger documentation
+        run: swag init
+
       - name: install wire
         run: go get -u github.com/google/wire/cmd/wire
 
