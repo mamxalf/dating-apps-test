@@ -34,7 +34,9 @@ func (u *DatingServiceImpl) GetDatingProfile(ctx context.Context, req dto.GetDat
 	}
 
 	result.Profiles = res
-	result.Pagination.SetPagination(res[0].TotalData, req.Page, req.Size)
+	if len(res) > 0 {
+		result.Pagination.SetPagination(res[0].TotalData, req.Page, req.Size)
+	}
 
 	return
 }
