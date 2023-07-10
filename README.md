@@ -85,4 +85,45 @@ make migrate_up
 make dev
 ```
 4. open localhost with port you have configured at .env and swagger path to see the api documentation, example: http://localhost:8080/swagger/index.html
+    *you can import also postman in root directory (postman_collection.json)
 5. Viola!
+
+### Makefile Trivia
+- Serve App
+```
+# run dev environtment
+make dev
+```
+
+- Linter Code
+```
+# install golangci-lint
+make lint-prepare
+
+# run linter
+make lint
+```
+
+- docker infra
+```
+# up postgre and redis
+make docker_dev
+
+# down / turnoff
+make docker_dev_off
+```
+
+- migration
+```
+# migration up (add new migration schema)
+make migrate_up
+
+# migration down (rollback migration schema)
+make migrate_down
+
+# migration drop (delete all migration schema)
+make migrate_drop
+
+# migration version (for checking migration version)
+make migrate_version
+```
